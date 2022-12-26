@@ -17,7 +17,12 @@ class HistoryFactory extends Factory
     public function definition()
     {
         return [
-            //
+                'user_id' => 1,
+                'from' => 'USD',
+                'to' => 'BRL',
+                'from_price' => 1.00,
+                'to_price' => 5.10, // password
+                'cotation' => 5.19,
         ];
     }
 }

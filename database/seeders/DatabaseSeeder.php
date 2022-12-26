@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,5 +21,14 @@ class DatabaseSeeder extends Seeder
              'name' => 'Guest',
              'email' => 'guest@paco.com',
          ]);
+
+         \App\Models\History::factory()
+            ->count(5)
+            ->state( new Sequence(
+                ['to' => 'BRL'],
+                ['to' => 'CAD'],
+                ['to' => 'USD'],
+            ))
+            ->create();
     }
 }

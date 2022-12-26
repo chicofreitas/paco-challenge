@@ -1,24 +1,48 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/inertia-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-export default function Dashboard(props) {
+export default function Dashboard({auth, errors, histories}) {
 
-    const {conversion, setConversion} = useState(
-        {
-            'base': 'USD',
-            'rates': {'BRL' : 5.19},
-            'value': 1.00,
-            'conversion' : 5.19
-        }
-    );
+    const [logs, setLogs] = useState(histories);
+    const [base, setbase] = useState('USD');
+    const [target, setTarget] = useState('BRL');
+    const [currencies, setCurrencies] = useState(['USD', 'BRL']);
+
+    const convertionList = logs.map( (log) => {
+        return (
+            <tr key={log.id}>
+                <td>{log.from}</td>
+                <td>{log.to}</td>
+                <td>{log.from_price}</td>
+                <td>{log.to_price}</td>
+                <td>{log.cotation}</td>
+                <td>{log.created_at}</td>
+            </tr>
+        )
+    });
+
+    const onChangeBase = (e) => {
+        setCurrencies(
+            [ e.target.value, currencies[1] ]
+        );
+        console.log(e.target.value);
+        const api = "https://api.exchangeratesapi.io/v1/latest?access_key=tfgbjh4H9FXKxWZbd7RPgjHrEz4aBBmr&base=${e.target.value}&symbols=GBP,JPY,EUR";
+    }
+
+    const onChangeTarget = (e) => {
+        setCurrencies(
+            [ currencies[0], e.target.value ]
+            );
+        console.log(e.target.value);
+    }
 
     //https://api.exchangeratesapi.io/v1/latest?access_key=API_KEY&base=USD&symbols=GBP,JPY,EUR
     //tfgbjh4H9FXKxWZbd7RPgjHrEz4aBBmr
     return (
         <AuthenticatedLayout
-            auth={props.auth}
-            errors={props.errors}
+            auth={auth}
+            errors={errors}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Painel de Controle</h2>}
         >
             <Head title="PACO: Conversor de Moedas" />
@@ -34,27 +58,28 @@ export default function Dashboard(props) {
                     <form method='post'>
                         <div className='py-4 flex flex-row'>
 
-                            <input type="text" name="from" placeholder="R$1.00" className='w-full'/>
+                            <input type="number" name="from" placeholder="R$1.00" className='w-full'/>
 
-                            <select name="from_select" id="">
-                            <option value="BRL"  >Real Brasileiro (BRL)</option>
+                            <select name="from_select" id="" defaultValue={'BRL'} onChange={e => onChangeBase(e)}>
+                                <option value="BRL" >Real Brasileiro (BRL)</option>
                                 <option value="CAD">Dólar Canadense (CAD)</option>
-                                <option value="USD" selected>Dólar Americano (USD)</option>
+                                <option value="USD" >Dólar Americano (USD)</option>
                             </select>
 
                         </div>
 
                         <div className='flex flex-row'>
-                            <input type="text" name="to" placeholder='USD5.19'className='w-full'/>
-                            <select name="to_select" id="">
-                                <option value="BRL" selected >Real Brasileiro (BRL)</option>
+                            <input type="number" name="to" placeholder='USD5.19'className='w-full'/>
+                            <select name="to_select" id="" defaultValue={'USD'} onChange={e => onChangeTarget(e)}>
+                                <option value="BRL">Real Brasileiro (BRL)</option>
                                 <option value="CAD">Dólar Canadense (CAD)</option>
                                 <option value="USD" >Dólar Americano (USD)</option>
                             </select>
                         </div>
                     </form>
+                </div>
 
-                    <div className='py-10 mt-10 bg-white px-5'>
+                <div className='py-10 mt-10 bg-white px-20'>
                         <header>
                             <h1 className='text-gray-600 font-bold text-5xl'>Histórico</h1>
                             <table  className='text-center'>
@@ -63,23 +88,17 @@ export default function Dashboard(props) {
                                         <th className='px-4'>Converter</th>
                                         <th className='px-4'>Para</th>
                                         <th className='px-4'>Base</th>
-                                        <th className='px-4'>Concersão</th>
+                                        <th className='px-4'>Conversão</th>
+                                        <th className='px-4'>Cotação</th>
                                         <th className='px-4'>Data</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>USD</td>
-                                        <td>BRL</td>
-                                        <td>1.00</td>
-                                        <td>5.19</td>
-                                        <td>2022-12-26</td>
-                                    </tr>
+                                    {convertionList}
                                 </tbody>
                             </table>
                         </header>
                     </div>
-                </div>
             </div>
         </AuthenticatedLayout>
     );
