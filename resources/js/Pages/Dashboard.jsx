@@ -1,13 +1,28 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/inertia-react';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 export default function Dashboard({auth, errors, histories}) {
-
+    
+    const [rates, setRates] = useState([]);
+    const [hist, setHist] = useState({from: 'USD', to : 'BRL', base : 1.00, conversion : 5.22, cotation : 5.22, date : '2022-12-26 00:00:00'});
     const [logs, setLogs] = useState(histories);
-    const [base, setbase] = useState('USD');
-    const [target, setTarget] = useState('BRL');
-    const [currencies, setCurrencies] = useState(['USD', 'BRL']);
+
+    useEffect( () => {
+        getRates();
+    }, []);
+
+    const getRates = async () => {
+        
+        await axios.get("http://localhost:8000/api/exchangerates")
+            .then( res => {
+                const rates = res.data.rates;
+                setRates(rates);
+            }).catch( err => {
+                console.log(err);
+            });
+    }
 
     const convertionList = logs.map( (log) => {
         return (
@@ -21,24 +36,30 @@ export default function Dashboard({auth, errors, histories}) {
             </tr>
         )
     });
+    
+    const convertTo = (value, from, to) => {
+        const val = Number(value);
+        const value1 = (from == undefined) ? hist.from : from;
+        const value2 = (to == undefined) ? hist.to : to;
+        const cot = ( rates[value2] / rates[value1] );
+        const conv = cot*val;
+        
+        const history = {
+            from: value1, 
+            to : value2,    
+            base : val, 
+            conversion : conv, 
+            cotation : cot, 
+            date : '2022-12-26 00:00:00'
+        }
 
-    const onChangeBase = (e) => {
-        setCurrencies(
-            [ e.target.value, currencies[1] ]
-        );
-        console.log(e.target.value);
-        const api = "https://api.exchangeratesapi.io/v1/latest?access_key=tfgbjh4H9FXKxWZbd7RPgjHrEz4aBBmr&base=${e.target.value}&symbols=GBP,JPY,EUR";
+        setHist(history);
     }
 
-    const onChangeTarget = (e) => {
-        setCurrencies(
-            [ currencies[0], e.target.value ]
-            );
-        console.log(e.target.value);
+    const saveHistory = () => {
+        setLogs(...hist);
     }
 
-    //https://api.exchangeratesapi.io/v1/latest?access_key=API_KEY&base=USD&symbols=GBP,JPY,EUR
-    //tfgbjh4H9FXKxWZbd7RPgjHrEz4aBBmr
     return (
         <AuthenticatedLayout
             auth={auth}
@@ -58,9 +79,11 @@ export default function Dashboard({auth, errors, histories}) {
                     <form method='post'>
                         <div className='py-4 flex flex-row'>
 
-                            <input type="number" name="from" placeholder="R$1.00" className='w-full'/>
+                            <input type="number" name="from" id="from" className='w-full' defaultValue="1.00" onChange={e => convertTo(e.target.value)}/>
 
-                            <select name="from_select" id="" defaultValue={'BRL'} onChange={e => onChangeBase(e)}>
+                            <select name="from_select" id="from_select" defaultValue={'USD'} onChange={
+                                    e => convertTo(Number(document.getElementById('from').value), e.target.value, history.to)
+                                }>
                                 <option value="BRL" >Real Brasileiro (BRL)</option>
                                 <option value="CAD">Dólar Canadense (CAD)</option>
                                 <option value="USD" >Dólar Americano (USD)</option>
@@ -69,14 +92,20 @@ export default function Dashboard({auth, errors, histories}) {
                         </div>
 
                         <div className='flex flex-row'>
-                            <input type="number" name="to" placeholder='USD5.19'className='w-full'/>
-                            <select name="to_select" id="" defaultValue={'USD'} onChange={e => onChangeTarget(e)}>
+                            <input type="number" name="to" id="to" className='w-full' placeholder={hist.conversion} />
+
+                            <select name="to_select" id="to_select" defaultValue={'BRL'} onChange={
+                                    e =>  convertTo(Number(document.getElementById('from').value), history.from, e.target.value)
+                                }>
                                 <option value="BRL">Real Brasileiro (BRL)</option>
                                 <option value="CAD">Dólar Canadense (CAD)</option>
                                 <option value="USD" >Dólar Americano (USD)</option>
                             </select>
                         </div>
                     </form>
+                    <button onClick={setLogs([...hist])}>
+                        Salvar conversão
+                    </button>
                 </div>
 
                 <div className='py-10 mt-10 bg-white px-20'>

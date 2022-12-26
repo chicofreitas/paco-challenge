@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie', 'https://api.exchangeratesapi.io/v1/latest*'],
 
     'allowed_methods' => ['*'],
 
