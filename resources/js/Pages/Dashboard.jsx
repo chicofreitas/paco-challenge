@@ -2,6 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/inertia-react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import HistoryItems from '@/Components/HistoryItems';
 
 export default function Dashboard({auth, errors, histories}) {
 
@@ -41,19 +42,6 @@ export default function Dashboard({auth, errors, histories}) {
                 console.log(err);
             });
         }
-
-    const convertionList = logs.map( (log) => {
-        return (
-            <tr key={log.id}>
-                <td>{log.from}</td>
-                <td>{log.to}</td>
-                <td>{log.from_price}</td>
-                <td>{log.to_price}</td>
-                <td>{log.cotation}</td>
-                <td>{log.created_at}</td>
-            </tr>
-        )
-    });
     
     const convertTo = (value, from, to) => {
         const val = Number(value);
@@ -116,33 +104,36 @@ export default function Dashboard({auth, errors, histories}) {
                             </select>
                         </div>
                     </form>
+
                     <button 
                         className="my-5 px-4 py-2 bg-green-600 border rounded-md text-white"
                         onClick={e => save()}>
                         Salvar conversão
                     </button>
+
                 </div>
 
-                <div className='py-10 mt-10 bg-white px-20'>
-                        <header>
-                            <h1 className='text-gray-600 font-bold text-3xl'>Histórico</h1>
-                            <table  className='text-center'>
-                                <thead>
-                                    <tr>
-                                        <th className='px-4'>Converter</th>
-                                        <th className='px-4'>Para</th>
-                                        <th className='px-4'>Base</th>
-                                        <th className='px-4'>Conversão</th>
-                                        <th className='px-4'>Cotação</th>
-                                        <th className='px-4'>Data</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {convertionList}
-                                </tbody>
-                            </table>
-                        </header>
-                    </div>
+                <div className='container mx-auto bg-white shadow-lg p-10'>
+                    <header>
+                        <h1 className='text-gray-600 font-bold text-center text-3xl'>Histórico</h1>
+                        
+                        <table className='table-auto'>
+                            <thead>
+                                <tr className='text-center'>
+                                    <th className='px-4'>Converter</th>
+                                    <th className='px-4'>Para</th>
+                                    <th className='px-4'>Base</th>
+                                    <th className='px-4'>Conversão</th>
+                                    <th className='px-4'>Cotação</th>
+                                    <th className='px-4'>Data</th>
+                                </tr>
+                            </thead>
+                            <tbody className='text-center'>
+                                <HistoryItems data={logs} />
+                            </tbody>
+                        </table>
+                    </header>
+                </div>
             </div>
         </AuthenticatedLayout>
     );
