@@ -16,9 +16,9 @@ Necessário um sistema de login:
 A criação de usuário pode ser manual, implementar apenas a autenticação e verificação de sessão. Após o desenvolvimento, gravar um vídeo de até 5 minutos mostrando o resultado final e disponibilizar o código através do github. Enviar essas informações para o email hiparco@cloudpaco.com.br com o assunto: “[nome-candidato] - Teste de desenvolvimento” O desenvolvedor tem liberdade para adicionar novas funcionalidade e desenvolver as já propostas da maneira que achar melhor, não existe certo ou errado nesse momento.
 ## Resumo
 
-Esta aplicação foi desenvolvida utilizando o (Laravel 9.x)[https://laravel.com/docs/9.x] com o starter kit (Breeze + InertiaJS)[https://laravel.com/docs/9.x/starter-kits#breeze-and-inertia] (para renderizar páginas em (ReactJS)[https://reactjs.org/docs/getting-started.html]). A instalação do Laravel 9.x já traz consigo o suporte ao (TailwindCSS)[https://tailwindcss.com/] como alternativa ao **Bootstrap**.
+Esta aplicação foi desenvolvida utilizando o [Laravel 9.x](https://laravel.com/docs/9.x) com o starter kit [Breeze + InertiaJS](https://laravel.com/docs/9.x/starter-kits#breeze-and-inertia) (para renderizar páginas em [ReactJS](https://reactjs.org/docs/getting-started.html)). A instalação do Laravel 9.x já traz consigo o suporte ao [TailwindCSS](https://tailwindcss.com/) como alternativa ao **Bootstrap**.
 
-## Intalação
+## Instalação
 
 ### Clone o repositório
 
