@@ -4,9 +4,9 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 export default function Dashboard({auth, errors, histories}) {
-    
+
     const [rates, setRates] = useState([]);
-    const [hist, setHist] = useState({from: 'USD', to : 'BRL', base : 1.00, conversion : 5.22, cotation : 5.22, date : '2022-12-26 00:00:00'});
+    const [hist, setHist] = useState({from: 'USD', to : 'BRL', from_price : 1.00, to_price : 5.22, cotation : 5.22, created_at : '2022-12-26 00:00:00'});
     const [logs, setLogs] = useState(histories);
 
     useEffect( () => {
@@ -14,15 +14,33 @@ export default function Dashboard({auth, errors, histories}) {
     }, []);
 
     const getRates = async () => {
-        
-        await axios.get("http://localhost:8000/api/exchangerates")
-            .then( res => {
-                const rates = res.data.rates;
-                setRates(rates);
+        await axios.get(
+            "http://localhost:8000/api/", 
+            ).then( res => {
+                setRates(res.data.rates);
             }).catch( err => {
                 console.log(err);
             });
-    }
+        }
+
+    const save = async () => {
+        await axios.post(
+            "http://localhost:8000/api/", 
+            {
+                user_id : auth.user.id,    
+                from: hist.from, 
+                to : hist.to,
+                from_price : hist.from_price, 
+                to_price : hist.conv, 
+                cotation : hist.cot,
+            }).then( res => {
+                hist.id = res.data.id;
+                hist.created_at = res.data.created_at;
+                setLogs([...logs, hist]);
+            }).catch( err => {
+                console.log(err);
+            });
+        }
 
     const convertionList = logs.map( (log) => {
         return (
@@ -47,17 +65,12 @@ export default function Dashboard({auth, errors, histories}) {
         const history = {
             from: value1, 
             to : value2,    
-            base : val, 
-            conversion : conv, 
-            cotation : cot, 
-            date : '2022-12-26 00:00:00'
+            from_price : val, 
+            to_price : conv.toFixed(2), 
+            cotation : cot.toFixed(2), 
+            created_at : '2022-12-26 00:00:00'
         }
-
         setHist(history);
-    }
-
-    const saveHistory = () => {
-        setLogs(...hist);
     }
 
     return (
@@ -68,7 +81,7 @@ export default function Dashboard({auth, errors, histories}) {
         >
             <Head title="PACO: Conversor de Moedas" />
 
-            <div className="py-12">
+            <div className="py-12"> 
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="p-6 text-gray-900">Bem vindo ao Paco Conversor de Moedas</div>
@@ -82,7 +95,7 @@ export default function Dashboard({auth, errors, histories}) {
                             <input type="number" name="from" id="from" className='w-full' defaultValue="1.00" onChange={e => convertTo(e.target.value)}/>
 
                             <select name="from_select" id="from_select" defaultValue={'USD'} onChange={
-                                    e => convertTo(Number(document.getElementById('from').value), e.target.value, history.to)
+                                    e => convertTo(Number(document.getElementById('from').value), e.target.value, hist.to)
                                 }>
                                 <option value="BRL" >Real Brasileiro (BRL)</option>
                                 <option value="CAD">Dólar Canadense (CAD)</option>
@@ -92,10 +105,10 @@ export default function Dashboard({auth, errors, histories}) {
                         </div>
 
                         <div className='flex flex-row'>
-                            <input type="number" name="to" id="to" className='w-full' placeholder={hist.conversion} />
+                            <input type="number" name="to" id="to" className='w-full' placeholder={hist.to_price} />
 
                             <select name="to_select" id="to_select" defaultValue={'BRL'} onChange={
-                                    e =>  convertTo(Number(document.getElementById('from').value), history.from, e.target.value)
+                                    e =>  convertTo(Number(document.getElementById('from').value), hist.from, e.target.value)
                                 }>
                                 <option value="BRL">Real Brasileiro (BRL)</option>
                                 <option value="CAD">Dólar Canadense (CAD)</option>
@@ -103,14 +116,16 @@ export default function Dashboard({auth, errors, histories}) {
                             </select>
                         </div>
                     </form>
-                    <button onClick={setLogs([...hist])}>
+                    <button 
+                        className="my-5 px-4 py-2 bg-green-600 border rounded-md text-white"
+                        onClick={e => save()}>
                         Salvar conversão
                     </button>
                 </div>
 
                 <div className='py-10 mt-10 bg-white px-20'>
                         <header>
-                            <h1 className='text-gray-600 font-bold text-5xl'>Histórico</h1>
+                            <h1 className='text-gray-600 font-bold text-3xl'>Histórico</h1>
                             <table  className='text-center'>
                                 <thead>
                                     <tr>

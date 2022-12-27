@@ -19,4 +19,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('exchangerates', [ExchangeratesController::class, 'index'])->name('exchange.index');
+Route::get('/', [ExchangeratesController::class, 'index'])->name('exchange.index');
+Route::post('/', [ExchangeratesController::class, 'store'])->name('exchange.store');

@@ -17,7 +17,7 @@ class HistoryController extends Controller
     public function index()
     {
         return Inertia::render('Dashboard', [
-            'histories' => History::orderBy('created_at', 'DESC')->limit(5)->get(),
+            'histories' => History::orderBy('created_at', 'DESC')->get(),
         ]);
     }
 
