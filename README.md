@@ -41,9 +41,9 @@ disponível no *.env*. Na instalação do Laravel já existe um arquivo *.env.ex
     DB_CONNECTION=mysql
     DB_HOST=127.0.0.1
     DB_PORT=3306
-    DB_DATABASE=paco
+    DB_DATABASE=pacocloud
     DB_USERNAME=root
-    DB_PASSWORD=fr31t45
+    DB_PASSWORD=root
     ...
 
 Feito isto, agora podemos executar as migrações e alimentar o banco (opcional) com alguns registros de testes, incluindo o usuário Guest
