@@ -62,4 +62,14 @@ Case deseje apenas migrar as tabelas, basta remover o parâmetro *--seed*
 
     php artisan migrate
 
+## Executando a aplicação
 
+Após realizada toda configuração acima, abra dois terminais (um para o servidor do artisan e outro para o vite) e execute os comandos abaixo em cada um deles
+
+    php artisan serve
+
+para iniciar o servidor local para acessar a aplicação no endereço *http://localhost:8000*. E
+
+    npm run dev
+
+para iniciar o servidor Node por meio do Vite. O endereço que o último comando exibe não é importante no momento, bastando apenas que seja acessado o *http://localhost:8000* no navegador.
