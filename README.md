@@ -14,3 +14,40 @@ Podem ser feitas as conversões entre todas as moedas (BRL -> USD, CAD -> USD...
 
 Necessário um sistema de login:
 A criação de usuário pode ser manual, implementar apenas a autenticação e verificação de sessão. Após o desenvolvimento, gravar um vídeo de até 5 minutos mostrando o resultado final e disponibilizar o código através do github. Enviar essas informações para o email hiparco@cloudpaco.com.br com o assunto: “[nome-candidato] - Teste de desenvolvimento” O desenvolvedor tem liberdade para adicionar novas funcionalidade e desenvolver as já propostas da maneira que achar melhor, não existe certo ou errado nesse momento.
+
+## Intalação
+
+### Clone o repositório
+
+    git clone https://github.com/chicofreitas/paco-challenge.git
+
+### Instalando as dependências do Laravel e NodeJS
+
+    php artisan update
+
+em seguida
+
+    npm update
+
+### Configurando o Banco e Executando as Migrações
+
+Antes de executar as migrações, é preciso criar um arquivo *.env* e configurar o banco de dados. Também é necessário criar o banco de dados no **MySQL** como mesmo nome
+disponível no *.env*. Na instalação do Laravel já existe um arquivo *.env.example*. Basta nomeá-lo para *.env* e modificar as linhas abaixo
+
+    ...
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=paco
+    DB_USERNAME=root
+    DB_PASSWORD=fr31t45
+    ...
+
+Feito isto, agora podemos executar as migrações e alimentar o banco (opcional) com alguns registros de testes, incluindo o usuário Guest
+
+    php artisan migrate --seed
+
+Case deseje apenas migrar as tabelas, basta remover o parâmetro *--seed* 
+
+    php artisan migrate
+
